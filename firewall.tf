@@ -1,6 +1,6 @@
-resource "google_compute_firewall" "firewall" {
+resource "google_compute_firewall" "my_firewall" {
   name    = "circle-firewall"
-  network = google_compute_network.vpc.name
+  network = google_compute_network.my_vpc.name
 
   allow {
     protocol = "icmp"

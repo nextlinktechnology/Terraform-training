@@ -4,7 +4,7 @@ resource "google_compute_instance" "vm_instance" {
 
   allow_stopping_for_update = true
 
-  tags = ["circle-web"]
+  tags = ["circle-ssh"]
 
   boot_disk {
     initialize_params {
@@ -13,7 +13,7 @@ resource "google_compute_instance" "vm_instance" {
   }
 
   network_interface {
-    network = google_compute_network.vpc.name
-    subnetwork = google_compute_subnetwork.subnetwork1.name
+    network = google_compute_network.my_vpc.name
+    subnetwork = google_compute_subnetwork.my_subnetwork.name
   }
 }
