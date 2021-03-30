@@ -1,5 +1,3 @@
-## Lab選擇
+# Terraform-training
 
-[GCP Lab](GCP/README.md)
-
-[AWS Lab](AWS/README.md)
+[Lab 1 我的第一個Terraform](Lab 1/README.md)
