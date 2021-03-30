@@ -31,7 +31,7 @@ VM
 
 這邊我們使用`credentials`的方式來設定部署到sandbox的環境去。
 
-```
+```tcl
 provider "google" {
   credentials = file("account.json")
   project     = "sandbox-206307"
@@ -71,7 +71,7 @@ terraform init
 
 接下來就是建立`vpc.tf`來定義我們的VPC，包括了`google_compute_network`、`google_compute_subnetwork`。
 
-```
+```tcl
  resource "google\_compute\_network" "my\_vpc" {
   name = "circle-vpc"
   auto\_create\_subnetworks = false
@@ -89,7 +89,7 @@ resource "google\_compute\_subnetwork" "my\_subnetwork" {
 
 當然還不能忘了我們的`firewall`，因為通常`firewall`是最容易變動的設定，所以我習慣把它獨立在一個tf檔案中。我們建立一個，只允許公司五樓與六樓IP可以訪問22 port以及icmp的`firewall`。
 
-```
+```tcl
 resource "google\_compute\_firewall" "my\_firewall" {
   name    = "circle-firewall"
   network = google\_compute\_network.my\_vpc.name
@@ -112,7 +112,7 @@ resource "google\_compute\_firewall" "my\_firewall" {
 
 在設定的時候別忘了要把前面的`firewall`tag給加進來。
 
-```
+```tcl
 resource "google\_compute\_instance" "my\_vm" {
   name         = "circle-instance"
   machine\_type = "f1-micro"
