@@ -289,7 +289,7 @@ To perform exactly these actions, run the following command to apply:
     terraform apply "terraform-lab1"
 ```
 
-都沒問的的話，我們接著再執行下面的指令來部署我們的環境
+都沒問題的話，我們接著再執行下面的指令來部署我們的環境
 
 ```shell
 terraform apply terraform-lab1
