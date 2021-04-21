@@ -1,7 +1,7 @@
 # 我的第一個Terraform
 
-## Lab選擇
+## 雲端環境選擇
 
-[GCP Lab](GCP/README.md)
+[GCP](GCP/README.md)
 
-[AWS Lab](AWS/README.md)
+[AWS](AWS/README.md)
