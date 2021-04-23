@@ -72,16 +72,16 @@ terraform init
 接下來就是建立`vpc.tf`來定義我們的VPC，包括了`google_compute_network`、`google_compute_subnetwork`。
 
 ```tcl
- resource "google\_compute\_network" "my\_vpc" {
+ resource "google_compute_network" "my_vpc" {
   name = "circle-vpc"
-  auto\_create\_subnetworks = false
+  auto_create_subnetworks = false
 }
 
-resource "google\_compute\_subnetwork" "my\_subnetwork" {
+resource "google_compute_subnetwork" "my_subnetwork" {
   name          = "asia-east1-my-subnetwork"
-  ip\_cidr\_range = "10.2.0.0/16"
+  ip_cidr_range = "10.2.0.0/16"
   region        = "asia-east1"
-  network       = google\_compute\_network.my\_vpc.name
+  network       = google_compute_network.my_vpc.name
 }
 ```
 
@@ -90,9 +90,9 @@ resource "google\_compute\_subnetwork" "my\_subnetwork" {
 當然還不能忘了我們的`firewall`，因為通常`firewall`是最容易變動的設定，所以我習慣把它獨立在一個tf檔案中。我們建立一個，只允許公司五樓與六樓IP可以訪問22 port以及icmp的`firewall`。
 
 ```tcl
-resource "google\_compute\_firewall" "my\_firewall" {
+resource "google_compute_firewall" "my_firewall" {
   name    = "circle-firewall"
-  network = google\_compute\_network.my\_vpc.name
+  network = google_compute_network.my_vpc.name
 
   allow {
     protocol = "icmp"
@@ -100,11 +100,11 @@ resource "google\_compute\_firewall" "my\_firewall" {
 
   allow {
     protocol = "tcp"
-    ports    = \["22"\]
+    ports    = ["22"]
   }
 
-  source\_ranges = \[ "220.135.202.135/32", "211.75.165.158/32" \]
-  source\_tags = \["circle-ssh"\]
+  source_ranges = [ "220.135.202.135/32", "211.75.165.158/32" ]
+  source_tags = ["circle-ssh"]
 }
 ```
 
@@ -113,23 +113,23 @@ resource "google\_compute\_firewall" "my\_firewall" {
 在設定的時候別忘了要把前面的`firewall`tag給加進來。
 
 ```tcl
-resource "google\_compute\_instance" "my\_vm" {
+resource "google_compute_instance" "my_vm" {
   name         = "circle-instance"
-  machine\_type = "f1-micro"
+  machine_type = "f1-micro"
 
-  allow\_stopping\_for\_update = true
+  allow_stopping_for_update = true
 
-  tags = \["circle-ssh"\]
+  tags = ["circle-ssh"]
 
-  boot\_disk {
-    initialize\_params {
+  boot_disk {
+    initialize_params {
       image = "debian-cloud/debian-9"
     }
   }
 
-  network\_interface {
-    network = google\_compute\_network.my\_vpc.name
-    subnetwork = google\_compute\_subnetwork.my\_subnetwork.name
+  network_interface {
+    network = google_compute_network.my_vpc.name
+    subnetwork = google_compute_subnetwork.my_subnetwork.name
   }
 }
 ```
@@ -149,70 +149,70 @@ Resource actions are indicated with the following symbols:
 
 Terraform will perform the following actions:
 
-  # google\_compute\_firewall.firewall will be created
-  + resource "google\_compute\_firewall" "firewall" {
-      + creation\_timestamp = (known after apply)
-      + destination\_ranges = (known after apply)
+  # google_compute_firewall.firewall will be created
+  + resource "google_compute_firewall" "firewall" {
+      + creation_timestamp = (known after apply)
+      + destination_ranges = (known after apply)
       + direction          = (known after apply)
-      + enable\_logging     = (known after apply)
+      + enable_logging     = (known after apply)
       + id                 = (known after apply)
       + name               = "circle-firewall"
       + network            = "circle-vpc"
       + priority           = 1000
       + project            = (known after apply)
-      + self\_link          = (known after apply)
-      + source\_ranges      = \[
+      + self_link          = (known after apply)
+      + source_ranges      = [
           + "211.75.165.158/32",
           + "220.135.202.135/32",
-        \]
-      + source\_tags        = \[
+        ]
+      + source_tags        = [
           + "circle-ssh",
-        \]
+        ]
 
       + allow {
-          + ports    = \[
+          + ports    = [
               + "22",
-            \]
+            ]
           + protocol = "tcp"
         }
       + allow {
-          + ports    = \[\]
+          + ports    = []
           + protocol = "icmp"
         }
     }
 
-  # google\_compute\_instance.vm\_instance will be created
-  + resource "google\_compute\_instance" "vm\_instance" {
-      + allow\_stopping\_for\_update = true
-      + can\_ip\_forward            = false
-      + cpu\_platform              = (known after apply)
-      + current\_status            = (known after apply)
-      + deletion\_protection       = false
-      + guest\_accelerator         = (known after apply)
+  # google_compute_instance.vm_instance will be created
+  + resource "google_compute_instance" "vm_instance" {
+      + allow_stopping_for_update = true
+      + can_ip_forward            = false
+      + cpu_platform              = (known after apply)
+      + current_status            = (known after apply)
+      + deletion_protection       = false
+      + guest_accelerator         = (known after apply)
       + id                        = (known after apply)
-      + instance\_id               = (known after apply)
-      + label\_fingerprint         = (known after apply)
-      + machine\_type              = "f1-micro"
-      + metadata\_fingerprint      = (known after apply)
-      + min\_cpu\_platform          = (known after apply)
+      + instance_id               = (known after apply)
+      + label_fingerprint         = (known after apply)
+      + machine_type              = "f1-micro"
+      + metadata_fingerprint      = (known after apply)
+      + min_cpu_platform          = (known after apply)
       + name                      = "circle-instance"
       + project                   = (known after apply)
-      + self\_link                 = (known after apply)
-      + tags                      = \[
+      + self_link                 = (known after apply)
+      + tags                      = [
           + "circle-web",
-        \]
-      + tags\_fingerprint          = (known after apply)
+        ]
+      + tags_fingerprint          = (known after apply)
       + zone                      = (known after apply)
 
-      + boot\_disk {
-          + auto\_delete                = true
-          + device\_name                = (known after apply)
-          + disk\_encryption\_key\_sha256 = (known after apply)
-          + kms\_key\_self\_link          = (known after apply)
-          + mode                       = "READ\_WRITE"
+      + boot_disk {
+          + auto_delete                = true
+          + device_name                = (known after apply)
+          + disk_encryption_key_sha256 = (known after apply)
+          + kms_key_self_link          = (known after apply)
+          + mode                       = "READ_WRITE"
           + source                     = (known after apply)
 
-          + initialize\_params {
+          + initialize_params {
               + image  = "debian-cloud/debian-9"
               + labels = (known after apply)
               + size   = (known after apply)
@@ -220,29 +220,29 @@ Terraform will perform the following actions:
             }
         }
 
-      + confidential\_instance\_config {
-          + enable\_confidential\_compute = (known after apply)
+      + confidential_instance_config {
+          + enable_confidential_compute = (known after apply)
         }
 
-      + network\_interface {
+      + network_interface {
           + name               = (known after apply)
           + network            = "circle-vpc"
-          + network\_ip         = (known after apply)
+          + network_ip         = (known after apply)
           + subnetwork         = "asia-east1-subnetwork1"
-          + subnetwork\_project = (known after apply)
+          + subnetwork_project = (known after apply)
 
-          + access\_config {
-              + nat\_ip       = (known after apply)
-              + network\_tier = (known after apply)
+          + access_config {
+              + nat_ip       = (known after apply)
+              + network_tier = (known after apply)
             }
         }
 
       + scheduling {
-          + automatic\_restart   = (known after apply)
-          + on\_host\_maintenance = (known after apply)
+          + automatic_restart   = (known after apply)
+          + on_host_maintenance = (known after apply)
           + preemptible         = (known after apply)
 
-          + node\_affinities {
+          + node_affinities {
               + key      = (known after apply)
               + operator = (known after apply)
               + values   = (known after apply)
@@ -250,33 +250,33 @@ Terraform will perform the following actions:
         }
     }
 
-  # google\_compute\_network.vpc will be created
-  + resource "google\_compute\_network" "vpc" {
-      + auto\_create\_subnetworks         = false
-      + delete\_default\_routes\_on\_create = false
-      + gateway\_ipv4                    = (known after apply)
+  # google_compute_network.vpc will be created
+  + resource "google_compute_network" "vpc" {
+      + auto_create_subnetworks         = false
+      + delete_default_routes_on_create = false
+      + gateway_ipv4                    = (known after apply)
       + id                              = (known after apply)
       + mtu                             = (known after apply)
       + name                            = "circle-vpc"
       + project                         = (known after apply)
-      + routing\_mode                    = (known after apply)
-      + self\_link                       = (known after apply)
+      + routing_mode                    = (known after apply)
+      + self_link                       = (known after apply)
     }
 
-  # google\_compute\_subnetwork.subnetwork1 will be created
-  + resource "google\_compute\_subnetwork" "subnetwork1" {
-      + creation\_timestamp         = (known after apply)
+  # google_compute_subnetwork.subnetwork1 will be created
+  + resource "google_compute_subnetwork" "subnetwork1" {
+      + creation_timestamp         = (known after apply)
       + fingerprint                = (known after apply)
-      + gateway\_address            = (known after apply)
+      + gateway_address            = (known after apply)
       + id                         = (known after apply)
-      + ip\_cidr\_range              = "10.2.0.0/16"
+      + ip_cidr_range              = "10.2.0.0/16"
       + name                       = "asia-east1-subnetwork1"
       + network                    = (known after apply)
-      + private\_ipv6\_google\_access = (known after apply)
+      + private_ipv6_google_access = (known after apply)
       + project                    = (known after apply)
       + region                     = "asia-east1"
-      + secondary\_ip\_range         = (known after apply)
-      + self\_link                  = (known after apply)
+      + secondary_ip_range         = (known after apply)
+      + self_link                  = (known after apply)
     }
 
 Plan: 4 to add, 0 to change, 0 to destroy.
@@ -298,28 +298,28 @@ terraform apply terraform-lab1
 你會得到下面的輸出結果
 
 ```shell
-google\_compute\_network.vpc: Creating...
-google\_compute\_network.vpc: Still creating... \[10s elapsed\]
-google\_compute\_network.vpc: Still creating... \[20s elapsed\]
-google\_compute\_network.vpc: Still creating... \[30s elapsed\]
-google\_compute\_network.vpc: Still creating... \[40s elapsed\]
-google\_compute\_network.vpc: Creation complete after 44s \[id=projects/sandbox-206307/global/networks/circle-vpc\]
-google\_compute\_subnetwork.subnetwork1: Creating...
-google\_compute\_firewall.firewall: Creating...
-google\_compute\_firewall.firewall: Still creating... \[10s elapsed\]
-google\_compute\_subnetwork.subnetwork1: Still creating... \[10s elapsed\]
-google\_compute\_subnetwork.subnetwork1: Creation complete after 13s \[id=projects/sandbox-206307/regions/asia-east1/subnetworks/asia-east1-subnetwork1\]
-google\_compute\_instance.vm\_instance: Creating...
-google\_compute\_firewall.firewall: Creation complete after 14s \[id=projects/sandbox-206307/global/firewalls/circle-firewall\]
-google\_compute\_instance.vm\_instance: Still creating... \[10s elapsed\]
-google\_compute\_instance.vm\_instance: Creation complete after 16s \[id=projects/sandbox-206307/zones/asia-east1-b/instances/circle-instance\]
+google_compute_network.vpc: Creating...
+google_compute_network.vpc: Still creating... [10s elapsed]
+google_compute_network.vpc: Still creating... [20s elapsed]
+google_compute_network.vpc: Still creating... [30s elapsed]
+google_compute_network.vpc: Still creating... [40s elapsed]
+google_compute_network.vpc: Creation complete after 44s [id=projects/sandbox-206307/global/networks/circle-vpc]
+google_compute_subnetwork.subnetwork1: Creating...
+google_compute_firewall.firewall: Creating...
+google_compute_firewall.firewall: Still creating... [10s elapsed]
+google_compute_subnetwork.subnetwork1: Still creating... [10s elapsed]
+google_compute_subnetwork.subnetwork1: Creation complete after 13s [id=projects/sandbox-206307/regions/asia-east1/subnetworks/asia-east1-subnetwork1]
+google_compute_instance.vm_instance: Creating...
+google_compute_firewall.firewall: Creation complete after 14s [id=projects/sandbox-206307/global/firewalls/circle-firewall]
+google_compute_instance.vm_instance: Still creating... [10s elapsed]
+google_compute_instance.vm_instance: Creation complete after 16s [id=projects/sandbox-206307/zones/asia-east1-b/instances/circle-instance]
 
 Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 
 The state of your infrastructure has been saved to the path
 below. This state is required to modify and destroy your
 infrastructure, so keep it safe. To inspect the complete state
-use the \`terraform show\` command.
+use the `terraform show` command.
 
 State path: terraform.tfstate
 ```
